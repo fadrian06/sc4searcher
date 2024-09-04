@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "dev": [
+      "Composer\\Config::disableProcessTimeout",
+      "php -S localhost:3000"
+    ]
+  },
+  "require": {
+    "flightphp/core": "^3.12"
+  }
+}
