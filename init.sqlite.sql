@@ -4,11 +4,10 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS categories (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name VARCHAR(255) UNIQUE NOT NULL,
-  parent_category INTEGER,
+  name VARCHAR(255) PRIMARY KEY,
+  parent_category VARCHAR(255),
 
-  FOREIGN KEY (parent_category) REFERENCES categories (id)
+  FOREIGN KEY (parent_category) REFERENCES categories (name)
 );
 
 CREATE TABLE IF NOT EXISTS modders (
@@ -20,16 +19,22 @@ CREATE TABLE IF NOT EXISTS modders (
     CHECK (link LIKE 'https://community.simtropolis.com/profile/%')
 );
 
+CREATE TABLE IF NOT EXISTS groups (
+  name VARCHAR(255) PRIMARY KEY
+);
+
 CREATE TABLE IF NOT EXISTS plugins (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR(255) NOT NULL,
   link VARCHAR(255) UNIQUE NOT NULL CHECK (link LIKE 'http%'),
   modder VARCHAR(255) NOT NULL,
   category VARCHAR(255) NOT NULL,
+  group_name VARCHAR(255),
 
   UNIQUE (name, modder),
   FOREIGN KEY (modder) REFERENCES modders (name),
-  FOREIGN KEY (category) REFERENCES categories (name)
+  FOREIGN KEY (category) REFERENCES categories (name),
+  FOREIGN KEY (group_name) REFERENCES groups (name)
 );
 
 CREATE TABLE IF NOT EXISTS dependencies (

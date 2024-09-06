@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use flight\net\Router;
 
+require_once 'utils.php';
+
 Flight::route('/', function (): void {
   Flight::render('pages/home', [], 'page');
   Flight::render('layouts/base', ['title' => 'Inicio']);
@@ -50,13 +52,7 @@ Flight::group('/registrarse', function (Router $router): void {
 
 Flight::group('/categorias', function (Router $router): void {
   $router->get('/', function (): void {
-    $result = Flight::get('db')->query('SELECT * FROM categories');
-
-    while ($category = $result->fetchArray()) {
-      $categories[] = $category;
-    }
-
-    Flight::render('pages/categories', ['categories' => $categories ?? []], 'page');
+    Flight::render('pages/categories', ['categories' => getCategories()], 'page');
     Flight::render('layouts/base', ['title' => 'Categorías']);
   });
 
@@ -76,19 +72,26 @@ Flight::group('/categorias', function (Router $router): void {
 });
 
 Flight::group('/plugins', function (Router $router): void {
-  $router->get('/', function (): void {});
+  $router->get('/', function (): void {
+    Flight::render(
+      'pages/plugins',
+      [
+        'plugins' => getPlugins(),
+        'modders' => getModders(),
+        'categories' => getCategories(),
+        'grupos' => getGroups()
+      ],
+      'page'
+    );
+    Flight::render('layouts/base', ['title' => 'Plugins']);
+  });
+
   $router->post('/', function (): void {});
 });
 
 Flight::group('/modders', function (Router $router): void {
   $router->get('/', function (): void {
-    $result = Flight::get('db')->query('SELECT * FROM modders');
-
-    while ($modder = $result->fetchArray()) {
-      $modders[] = $modder;
-    }
-
-    Flight::render('pages/modders', ['modders' => $modders ?? []], 'page');
+    Flight::render('pages/modders', ['modders' => getModders()], 'page');
     Flight::render('layouts/base', ['title' => 'Modders']);
   });
 
@@ -114,3 +117,23 @@ Flight::group('/modders', function (Router $router): void {
   });
 });
 
+Flight::group('/grupos', function (Router $router): void {
+  $router->get('/', function (): void {
+    Flight::render('pages/groups', ['groups' => getGroups()], 'page');
+    Flight::render('layouts/base', ['title' => 'Grupos']);
+  });
+
+  $router->post('/', function (): void {
+    $group = Flight::request()->data;
+
+    $stmt = Flight::get('db')->prepare(<<<sql
+      INSERT INTO groups
+      VALUES (:name)
+    sql);
+
+    $stmt->bindValue(':name', $group->name);
+    $stmt->execute();
+
+    Flight::redirect('/grupos');
+  });
+});

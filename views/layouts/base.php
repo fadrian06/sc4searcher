@@ -14,6 +14,7 @@
     <a href="./">Inicio</a>
     <a href="./categorias">Categorías</a>
     <a href="./modders">Modders</a>
+    <a href="./grupos">Grupos</a>
     <a href="./plugins">Plugins</a>
     <?php if (isset($_SESSION['user'])): ?>
       <a href="./salir">Cerrar sesión</a>
