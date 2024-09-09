@@ -40,26 +40,35 @@
   <main><?= $page ?></main>
   <footer>
     <h3>Comunidades</h3>
-    <ul>
-      <li>
-        <a href="https://community.simtropolis.com" target="_blank">Simtropolis</a>
-      </li>
-      <li>
-        <a href="https://sc4evermore.com" target="_blank">Sc4Evermore</a>
-      </li>
-      <li>
-        <a href="http://hide-inoki.com" target="_blank">Hide-Inoki</a>
-      </li>
-    </ul>
+    <div role="group">
+      <a href="https://community.simtropolis.com" target="_blank">
+        <img src="./assets/images/simtropolis.png" />
+      </a>
+      <a href="https://sc4evermore.com" target="_blank">
+        <img src="./assets/images/sc4evermore.png" />
+      </a>
+      <a href="http://hide-inoki.com" target="_blank">
+        <img src="./assets/images/hide-inoki.png" />
+      </a>
+    </div>
     <h4>
       Síguenos en
-      <a href="https://chat.whatsapp.com/Jc7PCiVQEV8LhVfbSb3Rdx" target="_blank"><img src="./assets/images/whatsapp.ico" width="32" /></a>
-      o
-      <a href="https://t.me/sc4fandomteam"><img src="./assets/images/telegram.png" width="32" /></a>
+      <div role="group">
+        <a href="https://chat.whatsapp.com/Jc7PCiVQEV8LhVfbSb3Rdx" target="_blank">
+          <img src="./assets/images/whatsapp.ico" width="32" />
+          <img src="./assets/images/5945953798780466410.jpg" />
+        </a>
+        <a href="https://t.me/sc4fandomteam">
+          <img src="./assets/images/telegram.png" width="32" />
+          <img src="./assets/images/5946212695114102063.jpg" />
+        </a>
+      </div>
     </h4>
   </footer>
   <?php if (isset($_GET['error'])): ?>
-    <script>alert(`<?= urldecode($_GET['error']) ?>`)</script>
+    <script>
+      alert(`<?= urldecode($_GET['error']) ?>`)
+    </script>
   <?php endif ?>
 </body>
 

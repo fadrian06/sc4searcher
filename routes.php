@@ -6,6 +6,11 @@ use flight\net\Router;
 
 require_once 'utils.php';
 
+Flight::route('/salir', function (): void {
+  unset($_SESSION['user']);
+  Flight::redirect(Flight::request()->referrer);
+});
+
 Flight::route('/', function (): void {
   Flight::render('pages/home', [], 'page');
   Flight::render('layouts/base', ['title' => 'Inicio']);
@@ -20,7 +25,20 @@ Flight::group('/ingresar', function (Router $router): void {
   $router->post('/', function (): void {
     $credentials = Flight::request()->data;
 
-    var_dump($credentials);
+    $stmt = db()->prepare('SELECT * FROM users WHERE username = :username');
+    $stmt->bindValue(':username', $credentials->username);
+    $stmt->execute();
+
+    $user = getRowsFromResult($stmt)[0] ?? null;
+
+    if (!$user || !password_verify($credentials->password, $user['password'])) {
+      Flight::redirect('/ingresar?error=' . urlencode('Usuario o contraseña incorrecta'));
+
+      return;
+    }
+
+    $_SESSION['user'] = $user;
+    Flight::redirect('/');
   });
 });
 
@@ -33,7 +51,7 @@ Flight::group('/registrarse', function (Router $router): void {
   $router->post('/', function (): void {
     $credentials = Flight::request()->data;
 
-    $stmt = Flight::get('db')->prepare(<<<sql
+    $stmt = db()->prepare(<<<sql
       INSERT INTO users
       VALUES (:username, :password)
     sql);
@@ -63,7 +81,7 @@ Flight::group('/categorias', function (Router $router): void {
   $router->post('/', function (): void {
     $category = Flight::request()->data;
 
-    $stmt = Flight::get('db')->prepare(<<<sql
+    $stmt = db()->prepare(<<<sql
       INSERT INTO categories (name, parent_category)
       VALUES (:name, :parentCategory)
     sql);
@@ -76,14 +94,26 @@ Flight::group('/categorias', function (Router $router): void {
   });
 
   $router->group('/@category', function (Router $router): void {
-    $router->get('/', function (string $category): void {
-      echo "Plugins de la categoría $category";
+    $router->get('/', function (string $categoryName): void {
+      Flight::render(
+        'pages/categories/plugins',
+        ['category' => getCategoryByName($categoryName)],
+        'page'
+      );
+
+      Flight::render('layouts/base', ['title' => $categoryName]);
     });
 
     $router->map('/eliminar', function (string $category): void {
-      $stmt = Flight::get('db')->prepare('DELETE FROM categories WHERE name = :name');
+      $stmt = db()->prepare('DELETE FROM categories WHERE name = :name');
       $stmt->bindValue(':name', $category);
-      $stmt->execute();
+
+      try {
+        $stmt->execute();
+        Flight::redirect('/categorias');
+      } catch (PDOException) {
+        Flight::redirect('/categorias?error=' . urlencode("No se puede eliminar la categoría $category porque hay plugins asociados a esta"));
+      }
     });
 
     $router->group('/editar', function (Router $router): void {
@@ -106,7 +136,7 @@ Flight::group('/categorias', function (Router $router): void {
       $router->post('/', function (string $oldName): void {
         $updatedCategory = Flight::request()->data;
 
-        $stmt = Flight::get('db')->prepare(<<<sql
+        $stmt = db()->prepare(<<<sql
           UPDATE categories SET name = :newName, parent_category = :newParentCategory
           WHERE name = :oldName
         sql);
@@ -144,7 +174,7 @@ Flight::group('/plugins', function (Router $router): void {
     array_shift($pluginNameRaw);
     $plugin->name = ucwords(implode(' ', $pluginNameRaw));
 
-    $stmt = Flight::get('db')->prepare(<<<sql
+    $stmt = db()->prepare(<<<sql
       INSERT INTO plugins (
         name, link, version, submitted, updated,
         description, installation, modder, category, group_name
@@ -167,12 +197,12 @@ Flight::group('/plugins', function (Router $router): void {
     $result = @$stmt->execute();
 
     if (!$result) {
-      Flight::redirect('/plugins?error=' . urlencode("Plugin $plugin->name ya existe ~ " . Flight::get('db')->lastErrorMsg()));
+      Flight::redirect('/plugins?error=' . urlencode("Plugin $plugin->name ya existe"));
 
       return;
     }
 
-    $plugin->id = Flight::get('db')->lastInsertRowID();
+    $plugin->id = db()->lastInsertId();
 
     if (array_filter($plugin->dependencies)) {
       $values = implode(', ', array_map(
@@ -185,7 +215,7 @@ Flight::group('/plugins', function (Router $router): void {
         VALUES $values
       sql;
 
-      Flight::get('db')->query($sql);
+      db()->query($sql);
       Flight::redirect('/plugins');
     }
   });
@@ -199,7 +229,7 @@ Flight::group('/modders', function (Router $router): void {
 
   $router->group('/@modder', function (Router $router): void {
     $router->map('/eliminar', function (string $modder): void {
-      $stmt = Flight::get('db')->prepare('DELETE FROM modders WHERE name = :name');
+      $stmt = db()->prepare('DELETE FROM modders WHERE name = :name');
       $stmt->bindValue(':name', $modder);
       $stmt->execute();
       Flight::redirect('/modders');
@@ -209,7 +239,7 @@ Flight::group('/modders', function (Router $router): void {
   $router->post('/', function (): void {
     $modder = Flight::request()->data;
 
-    $stmt = Flight::get('db')->prepare(<<<sql
+    $stmt = db()->prepare(<<<sql
       INSERT INTO modders (name, link)
       VALUES (:name, :link)
     sql);
@@ -237,7 +267,7 @@ Flight::group('/grupos', function (Router $router): void {
   $router->post('/', function (): void {
     $group = Flight::request()->data;
 
-    $stmt = Flight::get('db')->prepare(<<<sql
+    $stmt = db()->prepare(<<<sql
       INSERT INTO groups
       VALUES (:name)
     sql);

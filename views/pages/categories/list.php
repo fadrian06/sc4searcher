@@ -5,19 +5,35 @@
       $categories ?? [] as [
         'name' => $category,
         'subCategories' => $subCategories,
-        'parentCategory' => $parentCategory
+        'parentCategory' => $parentCategory,
+        'canBeDeleted' => $canBeDeleted
       ]
     ): ?>
       <?php if (!$parentCategory): ?>
         <li>
-          <?= $category ?>
+          <?php if ($subCategories): ?>
+            <?= $category ?>
+          <?php else: ?>
+            <a href="./categorias/<?= $category ?>"><?= $category ?></a>
+          <?php endif ?>
           <a href="./categorias/<?= $category ?>/editar">Editar</a>
+          <?php if ($canBeDeleted): ?>
+            <a href="./categorias/<?= $category ?>/eliminar">Eliminar</a>
+          <?php endif ?>
           <?php if ($subCategories): ?>
             <ul>
-              <?php foreach ($subCategories as ['name' => $category]): ?>
+              <?php foreach (
+                $subCategories as [
+                  'name' => $category,
+                  'canBeDeleted' => $canBeDeleted
+                ]
+              ): ?>
                 <li>
-                  <?= $category ?>
+                  <a href="./categorias/<?= $category ?>"><?= $category ?></a>
                   <a href="./categorias/<?= $category ?>/editar">Editar</a>
+                  <?php if ($canBeDeleted): ?>
+                    <a href="./categorias/<?= $category ?>/eliminar">Eliminar</a>
+                  <?php endif ?>
                 </li>
               <?php endforeach ?>
             </ul>
