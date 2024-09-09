@@ -4,7 +4,7 @@
     <?php foreach ($modders ?? [] as ['name' => $modder, 'link' => $href]): ?>
       <li>
         <a
-          href="<?= $href ?>"
+          href="<?= $href ?>?do=content&type=downloads_file&change_section=1"
           target="_blank"
           title="Ver perfil de <?= $modder ?> en Simtropolis">
           <?= $modder ?>

@@ -38,17 +38,18 @@
 <section>
   <h2>Registrar plugin</h2>
   <form method="post">
+    <input name="name" placeholder="Nombre" required />
     <input
       type="url"
       name="link"
-      placeholder="Enlace a Simtropolis"
+      placeholder="Enlace"
       required
-      pattern="https://community\.simtropolis\.com/files/file/[\w\/\-]+" />
+      pattern="https://.+" />
     <input
       name="version"
       placeholder="Versión"
       required
-      pattern="\d+.\d+(.\d+)?" />
+      pattern="\d+(.\d+(.\d+)?)?" />
     <label>
       Fecha de primera publicación:
       <input type="date" name="submitted" required />
@@ -59,6 +60,7 @@
     </label>
     <textarea name="description" placeholder="Descripción"></textarea>
     <textarea name="installation" placeholder="Instalación" required></textarea>
+    <textarea name="desinstallation" placeholder="Desinstalación" required></textarea>
     <select name="modder" required>
       <option value="">Selecciona un modder</option>
       <?php foreach ($modders as ['name' => $modder]): ?>

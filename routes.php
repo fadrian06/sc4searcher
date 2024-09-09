@@ -170,17 +170,14 @@ Flight::group('/plugins', function (Router $router): void {
 
   $router->post('/', function (): void {
     $plugin = Flight::request()->data;
-    $pluginNameRaw = explode('-', substr($plugin->link, 0, -1));
-    array_shift($pluginNameRaw);
-    $plugin->name = ucwords(implode(' ', $pluginNameRaw));
 
     $stmt = db()->prepare(<<<sql
       INSERT INTO plugins (
         name, link, version, submitted, updated,
-        description, installation, modder, category, group_name
+        description, installation, desinstallation, modder, category, group_name
       ) VALUES (
         :name, :link, :version, :submitted, :updated, :description,
-        :installation, :modder, :category, :group
+        :installation, :desinstallation, :modder, :category, :group
       )
     sql);
 
@@ -191,32 +188,33 @@ Flight::group('/plugins', function (Router $router): void {
     $stmt->bindValue(':updated', $plugin->updated);
     $stmt->bindValue(':description', $plugin->description ?: null);
     $stmt->bindValue(':installation', $plugin->installation);
+    $stmt->bindValue(':desinstallation', $plugin->desinstallation);
     $stmt->bindValue(':modder', $plugin->modder);
     $stmt->bindValue(':category', $plugin->category);
     $stmt->bindValue(':group', $plugin->group ?: null);
-    $result = @$stmt->execute();
 
-    if (!$result) {
-      Flight::redirect('/plugins?error=' . urlencode("Plugin $plugin->name ya existe"));
+    try {
+      $stmt->execute();
 
-      return;
-    }
+      $plugin->id = db()->lastInsertId();
 
-    $plugin->id = db()->lastInsertId();
+      if (array_filter($plugin->dependencies)) {
+        $values = implode(', ', array_map(
+          fn(int $dependencyId): string => "($plugin->id, $dependencyId)",
+          $plugin->dependencies
+        ));
 
-    if (array_filter($plugin->dependencies)) {
-      $values = implode(', ', array_map(
-        fn(int $dependencyId): string => "($plugin->id, $dependencyId)",
-        $plugin->dependencies
-      ));
+        $sql = <<<sql
+          INSERT INTO dependencies
+          VALUES $values
+        sql;
 
-      $sql = <<<sql
-        INSERT INTO dependencies
-        VALUES $values
-      sql;
+        db()->query($sql);
+      }
 
-      db()->query($sql);
       Flight::redirect('/plugins');
+    } catch (PDOException) {
+      Flight::redirect('/plugins?error=' . urlencode("Plugin $plugin->name ya existe"));
     }
   });
 });

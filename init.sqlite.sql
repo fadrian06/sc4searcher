@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS plugins (
   submitted DATE NOT NULL,
   updated DATE NOT NULL,
   description TEXT,
-  installation TEXT,
+  installation TEXT NOT NULL,
+  desinstallation TEXT NOT NULL,
   modder VARCHAR(255) NOT NULL,
   category VARCHAR(255) NOT NULL,
   group_name VARCHAR(255),
@@ -49,4 +50,9 @@ CREATE TABLE IF NOT EXISTS dependencies (
   CHECK (plugin_id != dependency_id),
   FOREIGN KEY (plugin_id) REFERENCES plugins (id),
   FOREIGN KEY (dependency_id) REFERENCES plugins (id)
+);
+
+CREATE TABLE IF NOT EXISTS redirections (
+  old_plugin_id INTEGER PRIMARY KEY NOT NULL,
+  new_plugin_id INTEGER NOT NULL
 );

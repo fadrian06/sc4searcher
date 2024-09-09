@@ -48,17 +48,20 @@ function getRowsFromResult(
 }
 
 /** @return array<int, array<string, mixed>> */
-function getRecordsFrom(string $table): array
+function getRecordsFrom(string $table, ?callable $mapper = null): array
 {
   $result = db()->query("SELECT * FROM $table");
 
-  return getRowsFromResult($result);
+  return getRowsFromResult($result, $mapper);
 }
 
 /** @return array<int, array{name: string, link: string}> */
 function getModders(): array
 {
-  return getRecordsFrom('modders');
+  return getRecordsFrom('modders', fn (array $modder): array => [
+    'name' => $modder['name'],
+    'link' => str_ends_with($modder['link'], '/') ? $modder['link'] : "{$modder['link']}/"
+  ]);
 }
 
 /** @return array<int, array{name: string}> */
