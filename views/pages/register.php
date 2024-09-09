@@ -7,5 +7,5 @@
     placeholder="Contraseña"
     required
     minlength="8" />
-  <button>Registrarse</button>
+  <button type="submit">Registrarse</button>
 </form>

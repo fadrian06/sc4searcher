@@ -11,6 +11,6 @@
   <h2>Registrar grupo</h2>
   <form method="post">
     <input name="name" placeholder="Nombre" required />
-    <button>Registrar</button>
+    <button type="submit">Registrar</button>
   </form>
 </section>
