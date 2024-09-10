@@ -212,6 +212,20 @@ Flight::group('/plugins', function (Router $router): void {
         db()->query($sql);
       }
 
+      if (array_filter($plugin->containedPlugins)) {
+        $values = implode(', ', array_map(
+          fn(int $containedId): string => "($plugin->id, $containedId)",
+          $plugin->containedPlugins
+        ));
+
+        $sql = <<<sql
+          INSERT INTO pluginpack_contents
+          VALUES $values
+        sql;
+
+        db()->query($sql);
+      }
+
       Flight::redirect('/plugins');
     } catch (PDOException) {
       Flight::redirect('/plugins?error=' . urlencode("Plugin $plugin->name ya existe"));

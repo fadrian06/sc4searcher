@@ -52,7 +52,11 @@ CREATE TABLE IF NOT EXISTS dependencies (
   FOREIGN KEY (dependency_id) REFERENCES plugins (id)
 );
 
-CREATE TABLE IF NOT EXISTS redirections (
-  old_plugin_id INTEGER PRIMARY KEY NOT NULL,
-  new_plugin_id INTEGER NOT NULL
+CREATE TABLE IF NOT EXISTS pluginpack_contents (
+  container_id INTEGER NOT NULL,
+  contained_id INTEGER NOT NULL,
+
+  CHECK (container_id != contained_id),
+  FOREIGN KEY (container_id) REFERENCES plugins (id),
+  FOREIGN KEY (contained_id) REFERENCES plugins (id)
 );

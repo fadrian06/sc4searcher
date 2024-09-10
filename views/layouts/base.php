@@ -28,7 +28,6 @@
         <a href="./modders">Modders</a>
         <a href="./grupos">Grupos</a>
         <a href="./plugins">Plugins</a>
-        <a href="./redirecciones">Redirecciones</a>
         <?php if (isset($_SESSION['user'])): ?>
           <a role="button" href="./salir">Cerrar sesión</a>
         <?php else: ?>

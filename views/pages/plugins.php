@@ -94,6 +94,12 @@
         <option value="<?= $id ?>"><?= "{$modder['name']}: $dependency" ?></option>
       <?php endforeach ?>
     </select>
+    <select name="containedPlugins[]" multiple>
+      <option value="" selected>Selecciona los plugins contenidos</option>
+      <?php foreach ($plugins as ['id' => $id, 'name' => $dependency, 'modder' => $modder]): ?>
+        <option value="<?= $id ?>"><?= "{$modder['name']}: $dependency" ?></option>
+      <?php endforeach ?>
+    </select>
     <button type="submit">Registrar</button>
   </form>
 </section>
