@@ -51,6 +51,11 @@
         <img src="./assets/images/hide-inoki.png" />
       </a>
     </div>
+    <div role="group">
+      <a href="https://toutsimcities.com/" target="_blank">
+        <img src="./assets/images/toutsimcities.png" />
+      </a>
+    </div>
     <h4>
       Síguenos en
       <div role="group">
