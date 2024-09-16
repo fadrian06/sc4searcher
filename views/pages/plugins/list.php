@@ -12,6 +12,23 @@ use SC4S\Models\Plugin;
  * @var Group[] $groups
  */
 
+/** @return object{name: string} */
+function getTranslation(Plugin $plugin): object
+{
+  $filePath = ROOT . "/translations/plugins/$plugin->id.json";
+
+  if (file_exists($filePath)) {
+    $fileContents = file_get_contents($filePath);
+    $translations = json_decode($fileContents);
+
+    if (property_exists($translations, $_SESSION['configuration']['language']->value)) {
+      return $translations->{$_SESSION['configuration']['language']->value};
+    }
+  }
+
+  return $plugin;
+}
+
 ?>
 
 <section>
@@ -22,7 +39,7 @@ use SC4S\Models\Plugin;
         <a
           href="<?= $plugin->downloadPageLink ?>"
           target="_blank">
-          <?= $plugin->name ?>
+          <?= getTranslation($plugin)->name ?>
         </a>
         <?php if ($plugin->hasDependencies()): ?>
           <ul>

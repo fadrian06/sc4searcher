@@ -1,3 +1,8 @@
+<?php
+
+use SC4S\Enums\Translation;
+
+?>
 <!DOCTYPE html>
 <html data-theme="dark">
 
@@ -28,12 +33,24 @@
         <a href="./modders">Modders</a>
         <a href="./grupos">Grupos</a>
         <a href="./plugins">Plugins</a>
-        <?php if (isset($_SESSION['user'])): ?>
+        <?php
+        if (isset($_SESSION['user'])): ?>
           <a role="button" href="./salir">Cerrar sesión</a>
         <?php else: ?>
           <a role="button" href="./ingresar">Ingresar</a>
           <a role="button" href="./registrarse">Registrarse</a>
         <?php endif ?>
+        <form action="./change-language" method="post">
+          <select name="language" required onchange="this.form.submit()">
+            <?php foreach (Translation::cases() as $translation): ?>
+              <option
+                value="<?= $translation->value ?>"
+                <?= $translation === $_SESSION['configuration']['language'] ? 'selected' : '' ?>>
+                <?= $translation->translatedName($_SESSION['configuration']['language']) ?>
+              </option>
+            <?php endforeach ?>
+          </select>
+        </form>
       </menu>
     </nav>
   </header>

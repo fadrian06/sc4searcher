@@ -7,6 +7,17 @@ use SC4S\Controllers\CategoryController;
 use SC4S\Controllers\GroupController;
 use SC4S\Controllers\ModderController;
 use SC4S\Controllers\PluginController;
+use SC4S\Enums\Translation;
+
+Flight::route('POST /change-language', function (): void {
+  $language = Translation::tryFrom(Flight::request()->data->language ?? '');
+
+  if ($language) {
+    $_SESSION['configuration']['language'] = $language;
+  }
+
+  Flight::redirect(Flight::request()->referrer);
+});
 
 Flight::route('/salir', function (): void {
   unset($_SESSION['user']);

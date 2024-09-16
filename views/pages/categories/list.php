@@ -4,6 +4,23 @@ use SC4S\Models\Category;
 
 /** @var Category[] $categories */
 
+/** @return object{name: string} */
+function getTranslation(Category $category): object
+{
+  $filePath = ROOT . "/translations/categories/$category->name.json";
+
+  if (file_exists($filePath)) {
+    $fileContents = file_get_contents($filePath);
+    $translations = json_decode($fileContents);
+
+    if (property_exists($translations, $_SESSION['configuration']['language']->value)) {
+      return $translations->{$_SESSION['configuration']['language']->value};
+    }
+  }
+
+  return $category;
+}
+
 ?>
 
 <section>
@@ -13,9 +30,11 @@ use SC4S\Models\Category;
       <?php if (!$category->isSubcategory()): ?>
         <li>
           <?php if ($category->hasSubcategories()): ?>
-            <?= $category->name ?>
+            <?= getTranslation($category)->name ?>
           <?php else: ?>
-            <a href="./categorias/<?= $category->name ?>"><?= $category->name ?></a>
+            <a href="./categorias/<?= $category->name ?>">
+              <?= getTranslation($category)->name ?>
+            </a>
           <?php endif ?>
           <a href="./categorias/<?= $category->name ?>/editar">Editar</a>
           <?php if (!$category->hasSubcategories()): ?>

@@ -4,6 +4,22 @@ use SC4S\Models\Group;
 
 /** @var Group[] $groups */
 
+function getTranslation(Group $group): ?string
+{
+  $filePath = ROOT . "/translations/groups/$group->name.json";
+
+  if (file_exists($filePath)) {
+    $fileContents = file_get_contents($filePath);
+    $translations = json_decode($fileContents);
+
+    if (property_exists($translations, $_SESSION['configuration']['language']->value)) {
+      return $translations->{$_SESSION['configuration']['language']->value};
+    }
+  }
+
+  return null;
+}
+
 ?>
 
 <section>
@@ -11,14 +27,10 @@ use SC4S\Models\Group;
   <ul>
     <?php foreach ($groups as $group): ?>
       <li>
-        <?php if (file_exists(ROOT . "/translations/groups/$group->name.json")): ?>
-          <abbr
-            title="<?= json_decode(file_get_contents(ROOT . "/translations/groups/$group->name.json"))->{$_SESSION['configs']['language'] ?? 'en'} ?>">
-            <?= $group->name ?>
-          </abbr>
-        <?php else: ?>
+        <abbr
+          title="<?= getTranslation($group) ?>">
           <?= $group->name ?>
-        <?php endif ?>
+        </abbr>
       </li>
     <?php endforeach ?>
   </ul>
