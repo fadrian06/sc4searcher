@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use flight\net\Router;
+use SC4S\Controllers\CategoryController;
 use SC4S\Controllers\ModderController;
 
 require_once 'utils.php';
@@ -70,52 +71,12 @@ Flight::group('/registrarse', function (Router $router): void {
 });
 
 Flight::group('/categorias', function (Router $router): void {
-  $router->get('/', function (): void {
-    Flight::render(
-      'pages/categories/list',
-      ['categories' => getCategories()],
-      'page'
-    );
-    Flight::render('layouts/base', ['title' => 'Categorías']);
-  });
-
-  $router->post('/', function (): void {
-    $category = Flight::request()->data;
-
-    $stmt = db()->prepare(<<<sql
-      INSERT INTO categories (name, parent_category)
-      VALUES (:name, :parentCategory)
-    sql);
-
-    $stmt->bindValue(':name', mb_convert_case($category->name, MB_CASE_TITLE));
-    $stmt->bindValue(':parentCategory', $category->parentCategory ?: null);
-    $stmt->execute();
-
-    Flight::redirect('/categorias');
-  });
+  $router->get('/', [CategoryController::class, 'showCategories']);
+  $router->post('/', [CategoryController::class, 'addCategory']);
 
   $router->group('/@category', function (Router $router): void {
-    $router->get('/', function (string $categoryName): void {
-      Flight::render(
-        'pages/categories/plugins',
-        ['category' => getCategoryByName($categoryName)],
-        'page'
-      );
-
-      Flight::render('layouts/base', ['title' => $categoryName]);
-    });
-
-    $router->map('/eliminar', function (string $category): void {
-      $stmt = db()->prepare('DELETE FROM categories WHERE name = :name');
-      $stmt->bindValue(':name', $category);
-
-      try {
-        $stmt->execute();
-        Flight::redirect('/categorias');
-      } catch (PDOException) {
-        Flight::redirect('/categorias?error=' . urlencode("No se puede eliminar la categoría $category porque hay plugins asociados a esta"));
-      }
-    });
+    $router->get('/', [CategoryController::class, 'showCategory']);
+    $router->map('/eliminar', [CategoryController::class, 'deleteCategory']);
 
     $router->group('/editar', function (Router $router): void {
       $router->get('/', function (string $categoryName): void {

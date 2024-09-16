@@ -1,38 +1,40 @@
+<?php
+
+use SC4S\Models\Category;
+
+/** @var Category[] $categories */
+
+?>
+
 <section>
   <h1>Categorías</h1>
   <ul>
-    <?php foreach (
-      $categories ?? [] as [
-        'name' => $category,
-        'subCategories' => $subCategories,
-        'parentCategory' => $parentCategory,
-        'canBeDeleted' => $canBeDeleted
-      ]
-    ): ?>
-      <?php if (!$parentCategory): ?>
+    <?php foreach ($categories as $category): ?>
+      <?php if (!$category->isSubcategory()): ?>
         <li>
-          <?php if ($subCategories): ?>
-            <?= $category ?>
+          <?php if ($category->hasSubcategories()): ?>
+            <?= $category->name ?>
           <?php else: ?>
-            <a href="./categorias/<?= $category ?>"><?= $category ?></a>
+            <a href="./categorias/<?= $category->name ?>"><?= $category->name ?></a>
           <?php endif ?>
-          <a href="./categorias/<?= $category ?>/editar">Editar</a>
-          <?php if ($canBeDeleted): ?>
-            <a href="./categorias/<?= $category ?>/eliminar">Eliminar</a>
+          <a href="./categorias/<?= $category->name ?>/editar">Editar</a>
+          <?php if (!$category->hasSubcategories()): ?>
+            <a href="./categorias/<?= $category->name ?>/eliminar">Eliminar</a>
           <?php endif ?>
-          <?php if ($subCategories): ?>
+          <?php if ($category->hasSubcategories()): ?>
             <ul>
-              <?php foreach (
-                $subCategories as [
-                  'name' => $category,
-                  'canBeDeleted' => $canBeDeleted
-                ]
-              ): ?>
+              <?php foreach ($category->subcategories as $subcategory): ?>
                 <li>
-                  <a href="./categorias/<?= $category ?>"><?= $category ?></a>
-                  <a href="./categorias/<?= $category ?>/editar">Editar</a>
-                  <?php if ($canBeDeleted): ?>
-                    <a href="./categorias/<?= $category ?>/eliminar">Eliminar</a>
+                  <a href="./categorias/<?= $subcategory->name ?>">
+                    <?= $subcategory->name ?>
+                  </a>
+                  <a href="./categorias/<?= $subcategory->name ?>/editar">
+                    Editar
+                  </a>
+                  <?php if (!$subcategory->hasSubcategories()): ?>
+                    <a href="./categorias/<?= $subcategory->name ?>/eliminar">
+                      Eliminar
+                    </a>
                   <?php endif ?>
                 </li>
               <?php endforeach ?>
@@ -50,16 +52,11 @@
     <input name="name" placeholder="Nombre" />
     <select name="parentCategory">
       <option value="">Selecciona una categoría contenedora</option>
-      <?php foreach (
-        $categories as [
-          'name' => $category,
-          'parentCategory' => $parentCategory
-        ]
-      ): ?>
-        <?php if ($parentCategory): ?>
-          <option value="<?= $category ?>"><?= "$parentCategory ~ $category" ?></option>
+      <?php foreach ($categories as $category): ?>
+        <?php if ($category->isSubcategory()): ?>
+          <option value="<?= $category->name ?>"><?= "$category->parentCategory->name ~ $category->name" ?></option>
         <?php else: ?>
-          <option><?= $category ?></option>
+          <option><?= $category->name ?></option>
         <?php endif ?>
       <?php endforeach ?>
     </select>
