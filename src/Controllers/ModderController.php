@@ -4,6 +4,7 @@ namespace SC4S\Controllers;
 
 use Flight;
 use SC4S\Exceptions\ResourceNotFound;
+use SC4S\Models\Modder;
 use SC4S\Repositories\Interfaces\ModderRepository;
 
 final readonly class ModderController
@@ -22,5 +23,24 @@ final readonly class ModderController
 
     Flight::render('pages/modders/profile', compact('modder'), 'page');
     Flight::render('layouts/base', ['title' => $modderName]);
+  }
+
+  function deleteModder(string $modderName): void
+  {
+    $this->repository->deleteByName($modderName);
+    $this->showModders();
+  }
+
+  function addModder(): void
+  {
+    $modderCollection = Flight::request()->data;
+    $modder = new Modder($modderCollection->name, $modderCollection->link);
+    $result = $this->repository->save($modder);
+
+    if (!$result->wasSuccessfully()) {
+      Flight::redirect("/modders?error=$result->error");
+    } else {
+      Flight::redirect(Flight::request()->referrer);
+    }
   }
 }

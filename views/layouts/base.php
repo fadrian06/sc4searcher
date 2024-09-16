@@ -55,6 +55,9 @@
       <a href="https://toutsimcities.com/" target="_blank">
         <img src="./assets/images/toutsimcities.png" />
       </a>
+      <a href="https://cafe.naver.com/simcitysquare/?viewType=pc" target="_blank">
+        <img src="./assets/images/simcitysquare.png" />
+      </a>
     </div>
     <h4>
       Síguenos en

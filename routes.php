@@ -248,26 +248,7 @@ Flight::group('/modders', function (Router $router): void {
     $router->get('/', [ModderController::class, 'showModder']);
   });
 
-  $router->post('/', function (): void {
-    $modder = Flight::request()->data;
-
-    $stmt = db()->prepare(<<<sql
-      INSERT INTO modders (name, link)
-      VALUES (:name, :link)
-    sql);
-
-    $stmt->bindValue(':name', $modder->name);
-    $stmt->bindValue(':link', $modder->link);
-    $result = @$stmt->execute();
-
-    if (!$result) {
-      Flight::redirect('/modders?error=' . urlencode("Modder $modder->name ya existe"));
-
-      return;
-    }
-
-    Flight::redirect('/modders');
-  });
+  $router->post('/', [ModderController::class, 'addModder']);
 });
 
 Flight::group('/grupos', function (Router $router): void {
