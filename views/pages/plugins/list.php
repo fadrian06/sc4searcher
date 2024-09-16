@@ -1,30 +1,38 @@
+<?php
+
+use SC4S\Models\Category;
+use SC4S\Models\Group;
+use SC4S\Models\Modder;
+use SC4S\Models\Plugin;
+
+/**
+ * @var Modder[] $modders
+ * @var Category[] $categories
+ * @var Plugin[] $plugins
+ * @var Group[] $groups
+ */
+
+?>
+
 <section>
   <h1>Plugins</h1>
   <ul>
-    <?php foreach (
-      $plugins ?? [] as [
-        'name' => $plugin,
-        'link' => $href,
-        'dependencies' => $dependencies
-      ]
-    ): ?>
+    <?php foreach ($plugins as $plugin): ?>
       <li>
         <a
-          href="<?= $href ?>"
-          target="_blank"
-          title="Ver en Simtropolis">
-          <?= $plugin ?>
+          href="<?= $plugin->downloadPageLink ?>"
+          target="_blank">
+          <?= $plugin->name ?>
         </a>
-        <?php if ($dependencies): ?>
+        <?php if ($plugin->hasDependencies()): ?>
           <ul>
             <li>Dependencies</li>
-            <?php foreach ($dependencies as ['name' => $plugin, 'link' => $href]): ?>
+            <?php foreach ($plugin->dependencies as $dependency): ?>
               <li>
                 <a
-                  href="<?= $href ?>"
-                  target="_blank"
-                  title="Ver en Simtropolis">
-                  <?= $plugin ?>
+                  href="<?= $dependency->downloadPageLink ?>"
+                  target="_blank">
+                  <?= $dependency->name ?>
                 </a>
               </li>
             <?php endforeach ?>
@@ -63,41 +71,42 @@
     <textarea name="desinstallation" placeholder="Desinstalación" required></textarea>
     <select name="modder" required>
       <option value="">Selecciona un modder</option>
-      <?php foreach ($modders as ['name' => $modder]): ?>
-        <option><?= $modder ?></option>
+      <?php foreach ($modders as $modder): ?>
+        <option><?= $modder->name ?></option>
       <?php endforeach ?>
     </select>
     <select name="category" required>
       <option value="">Selecciona una categoría</option>
-      <?php foreach (
-        $categories as [
-          'name' => $category,
-          'parentCategory' => $parentCategory
-        ]
-      ): ?>
-        <?php if ($parentCategory): ?>
-          <option value="<?= $category ?>"><?= "$parentCategory ~ $category" ?></option>
+      <?php foreach ($categories as $category): ?>
+        <?php if ($category->isSubcategory()): ?>
+          <option value="<?= $category->name ?>">
+            <?= "$category->parentCategory->name ~ $category->name" ?>
+          </option>
         <?php else: ?>
-          <option><?= $category ?></option>
+          <option><?= $category->name ?></option>
         <?php endif ?>
       <?php endforeach ?>
     </select>
     <select name="group">
       <option value="">Selecciona un grupo</option>
-      <?php foreach ($groups as ['name' => $group]): ?>
-        <option><?= $group ?></option>
+      <?php foreach ($groups as $group): ?>
+        <option><?= $group->name ?></option>
       <?php endforeach ?>
     </select>
     <select name="dependencies[]" multiple>
       <option selected value="">Selecciona las dependencias</option>
-      <?php foreach ($plugins as ['id' => $id, 'name' => $dependency, 'modder' => $modder]): ?>
-        <option value="<?= $id ?>"><?= "{$modder['name']}: $dependency" ?></option>
+      <?php foreach ($plugins as $dependency): ?>
+        <option value="<?= $dependency->id ?>">
+          <?= "{$dependency->modder->name}: $dependency->name" ?>
+        </option>
       <?php endforeach ?>
     </select>
     <select name="containedPlugins[]" multiple>
       <option value="" selected>Selecciona los plugins contenidos</option>
-      <?php foreach ($plugins as ['id' => $id, 'name' => $dependency, 'modder' => $modder]): ?>
-        <option value="<?= $id ?>"><?= "{$modder['name']}: $dependency" ?></option>
+      <?php foreach ($plugins as $contained): ?>
+        <option value="<?= $contained->id ?>">
+          <?= "{$contained->modder->name}: $contained->name" ?>
+        </option>
       <?php endforeach ?>
     </select>
     <button type="submit">Registrar</button>

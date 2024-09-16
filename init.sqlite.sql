@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS plugins (
   updated DATE NOT NULL,
   description TEXT,
   installation TEXT NOT NULL,
+  sc4pac_id VARCHAR(255) UNIQUE CHECK (sc4pac_id LIKE '%:%'),
   desinstallation TEXT NOT NULL,
   modder VARCHAR(255) NOT NULL,
   category VARCHAR(255) NOT NULL,
@@ -44,23 +45,28 @@ CREATE TABLE IF NOT EXISTS plugins (
 );
 
 CREATE TABLE IF NOT EXISTS dependencies (
-  plugin_id INTEGER NOT NULL,
+  dependent_id INTEGER NOT NULL,
   dependency_id INTEGER NOT NULL,
 
-  CHECK (plugin_id != dependency_id),
-  FOREIGN KEY (plugin_id) REFERENCES plugins (id),
+  CHECK (dependent_id != dependency_id),
+  FOREIGN KEY (dependent_id) REFERENCES plugins (id),
   FOREIGN KEY (dependency_id) REFERENCES plugins (id)
-);
-
-CREATE TABLE IF NOT EXISTS pluginpack_contents (
-  container_id INTEGER NOT NULL,
-  contained_id INTEGER NOT NULL,
-
-  CHECK (container_id != contained_id),
-  FOREIGN KEY (container_id) REFERENCES plugins (id),
-  FOREIGN KEY (contained_id) REFERENCES plugins (id)
 );
 
 DELETE FROM modders;
 INSERT INTO modders (name, link)
 VALUES ('memo', 'https://community.simtropolis.com/profile/95442-memo/');
+
+DELETE FROM categories;
+INSERT INTO categories (name, parent_category)
+VALUES ('Bug Fixes', null);
+
+DELETE FROM groups;
+INSERT INTO groups (name)
+VALUES ('BSC'), ('HKABT'), ('LBT'), ('SFBT')
+
+DELETE FROM plugins;
+INSERT INTO plugins (
+  id, name, link, version, submitted, updated, description,
+  installation, sc4pac_id, desinstallation, modder, category, group_name
+) VALUES (1, 'Region Thumbnail Fix DLL', 'https://community.simtropolis.com/files/file/36396-region-thumbnail-fix-dll/', '1.0.0', '2024-08-07', '2024-08-07', null, '', 'memo:region-thumbnail-fix-dll', '', 'memo', 'Bug Fixes', null);

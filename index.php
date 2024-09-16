@@ -2,27 +2,14 @@
 
 declare(strict_types=1);
 
-use Illuminate\Container\Container;
 use SC4S\Exceptions\ResourceNotFound;
-use SC4S\Repositories\Implementations\PDO\PDOCategoryRepository;
-use SC4S\Repositories\Implementations\PDO\PDOModderRepository;
-use SC4S\Repositories\Interfaces\CategoryRepository;
-use SC4S\Repositories\Interfaces\ModderRepository;
+
+const ROOT = __DIR__;
 
 require_once 'vendor/autoload.php';
+require_once 'container.php';
 require_once 'routes.php';
 
-$container = new Container;
-
-$container->bind(PDO::class, fn(): PDO => new PDO(
-  'sqlite:sc4searcher.db',
-  options: [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
-), true);
-
-$container->bind(ModderRepository::class, PDOModderRepository::class, true);
-$container->bind(CategoryRepository::class, PDOCategoryRepository::class, true);
-
-Flight::registerContainerHandler([$container, 'get']);
 session_start();
 
 try {
