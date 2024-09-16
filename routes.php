@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use flight\net\Router;
+use SC4S\Controllers\ModderController;
 
 require_once 'utils.php';
 
@@ -234,10 +235,7 @@ Flight::group('/plugins', function (Router $router): void {
 });
 
 Flight::group('/modders', function (Router $router): void {
-  $router->get('/', function (): void {
-    Flight::render('pages/modders', ['modders' => getModders()], 'page');
-    Flight::render('layouts/base', ['title' => 'Modders']);
-  });
+  $router->get('/', [ModderController::class, 'showModders']);
 
   $router->group('/@modder', function (Router $router): void {
     $router->map('/eliminar', function (string $modder): void {
@@ -246,6 +244,8 @@ Flight::group('/modders', function (Router $router): void {
       $stmt->execute();
       Flight::redirect('/modders');
     });
+
+    $router->get('/', [ModderController::class, 'showModder']);
   });
 
   $router->post('/', function (): void {

@@ -60,3 +60,7 @@ CREATE TABLE IF NOT EXISTS pluginpack_contents (
   FOREIGN KEY (container_id) REFERENCES plugins (id),
   FOREIGN KEY (contained_id) REFERENCES plugins (id)
 );
+
+DELETE FROM modders;
+INSERT INTO modders (name, link)
+VALUES ('memo', 'https://community.simtropolis.com/profile/95442-memo/');

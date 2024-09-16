@@ -1,15 +1,18 @@
+<?php
+
+use SC4S\Models\Modder;
+
+/** @var Modder[] $modders */
+
+?>
+
 <section>
   <h1>Modders</h1>
   <ul>
-    <?php foreach ($modders ?? [] as ['name' => $modder, 'link' => $href]): ?>
+    <?php foreach ($modders as $modder): ?>
       <li>
-        <a
-          href="<?= $href ?>?do=content&type=downloads_file&change_section=1"
-          target="_blank"
-          title="Ver perfil de <?= $modder ?> en Simtropolis">
-          <?= $modder ?>
-        </a>
-        <a href="./modders/<?= $modder ?>/eliminar" role="button">Eliminar</a>
+        <a href="./modders/<?= $modder->name ?>"><?= $modder->name ?></a>
+        <a href="./modders/<?= $modder->name ?>/eliminar" role="button">Eliminar</a>
       </li>
     <?php endforeach ?>
   </ul>
