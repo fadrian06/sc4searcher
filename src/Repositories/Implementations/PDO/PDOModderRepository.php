@@ -30,7 +30,11 @@ final readonly class PDOModderRepository implements ModderRepository
       return null;
     }
 
-    return self::mapper($modderArray['name'], $modderArray['link']);
+    return self::mapper(
+      $modderArray['name'],
+      $modderArray['profile_link'],
+      $modderArray['profile_image_link']
+    );
   }
 
   function deleteByName(string $modderName): EmptyResult
@@ -54,8 +58,11 @@ final readonly class PDOModderRepository implements ModderRepository
     }
   }
 
-  private static function mapper(string $modderName, string $modderLink): Modder
-  {
-    return new Modder($modderName, $modderLink, []);
+  private static function mapper(
+    string $name,
+    string $profileLink,
+    string $profileImageLink
+  ): Modder {
+    return new Modder($name, $profileLink, $profileImageLink, []);
   }
 }

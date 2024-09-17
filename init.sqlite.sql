@@ -12,11 +12,12 @@ CREATE TABLE IF NOT EXISTS categories (
 
 CREATE TABLE IF NOT EXISTS modders (
   name VARCHAR(255) NOT NULL PRIMARY KEY,
-  link
+  profile_link
     VARCHAR(255)
     UNIQUE
     NOT NULL
-    CHECK (link LIKE 'https://community.simtropolis.com/profile/%')
+    CHECK (profile_link LIKE 'https://community.simtropolis.com/profile/%'),
+  profile_image_link VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS groups (
@@ -54,8 +55,8 @@ CREATE TABLE IF NOT EXISTS dependencies (
 );
 
 DELETE FROM modders;
-INSERT INTO modders (name, link)
-VALUES ('memo', 'https://community.simtropolis.com/profile/95442-memo/');
+INSERT INTO modders (name, profile_link, profile_image_link)
+VALUES ('memo', 'https://community.simtropolis.com/profile/95442-memo/', 'https://www.simtropolis.com/objects/profiles/profile/photo-95442.gif');
 
 DELETE FROM categories;
 INSERT INTO categories (name, parent_category)
@@ -63,7 +64,7 @@ VALUES ('Bug Fixes', null);
 
 DELETE FROM groups;
 INSERT INTO groups (name)
-VALUES ('BSC'), ('HKABT'), ('LBT'), ('SFBT')
+VALUES ('BSC'), ('HKABT'), ('LBT'), ('SFBT');
 
 DELETE FROM plugins;
 INSERT INTO plugins (

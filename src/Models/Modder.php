@@ -10,6 +10,7 @@ final readonly class Modder
   function __construct(
     public readonly string $name,
     string $profileLink,
+    public string $profileImageLink,
     private array $plugins = [],
   ) {
     $this->profileLink = str_ends_with($profileLink, '/')

@@ -35,11 +35,3 @@ function getTranslation(Group $group): ?string
     <?php endforeach ?>
   </ul>
 </section>
-
-<section>
-  <h2>Registrar grupo</h2>
-  <form method="post">
-    <input name="name" placeholder="Nombre" required />
-    <button type="submit">Registrar</button>
-  </form>
-</section>

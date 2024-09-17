@@ -11,22 +11,12 @@ use SC4S\Models\Modder;
   <ul>
     <?php foreach ($modders as $modder): ?>
       <li>
-        <a href="./modders/<?= $modder->name ?>"><?= $modder->name ?></a>
+        <a href="./modders/<?= $modder->name ?>">
+          <img src="<?= $modder->profileImageLink ?>" width="64" />
+          <?= $modder->name ?>
+        </a>
         <a href="./modders/<?= $modder->name ?>/eliminar" role="button">Eliminar</a>
       </li>
     <?php endforeach ?>
   </ul>
-</section>
-
-<section>
-  <h2>Registrar modder</h2>
-  <form method="post">
-    <input name="name" placeholder="Nombre" required />
-    <input
-      type="url"
-      name="link"
-      placeholder="URL del perfil de Simtropolis"
-      pattern="https://community\.simtropolis\.com/profile/[\w\-\/]+" />
-    <button type="submit">Registrar</button>
-  </form>
 </section>
