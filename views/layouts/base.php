@@ -75,6 +75,9 @@ use SC4S\Enums\Translation;
       <a href="https://cafe.naver.com/simcitysquare/?viewType=pc" target="_blank">
         <img src="./assets/images/simcitysquare.png" />
       </a>
+      <a href="http://simcity.capitalsim.net/" target="_blank">
+        <img src="./assets/images/capitalsimcity.png" />
+      </a>
     </div>
     <h4>
       Síguenos en
