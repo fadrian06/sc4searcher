@@ -12,7 +12,7 @@ use SC4S\Models\Modder;
     <?php foreach ($modders as $modder): ?>
       <li>
         <a href="./modders/<?= $modder->name ?>">
-          <img src="<?= $modder->profileImageLink ?>" width="64" />
+          <img src="<?= $modder->profileImageLink ?>" />
           <?= $modder->name ?>
         </a>
         <a href="./modders/<?= $modder->name ?>/eliminar" role="button">Eliminar</a>

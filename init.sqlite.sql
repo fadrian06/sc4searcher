@@ -45,6 +45,13 @@ CREATE TABLE IF NOT EXISTS plugins (
   FOREIGN KEY (group_name) REFERENCES groups (name)
 );
 
+CREATE TABLE IF NOT EXISTS plugin_images (
+  plugin_id INTEGER NOT NULL,
+  image_link VARCHAR(255) UNIQUE,
+
+  FOREIGN KEY (plugin_id) REFERENCES plugins (id)
+);
+
 CREATE TABLE IF NOT EXISTS dependencies (
   dependent_id INTEGER NOT NULL,
   dependency_id INTEGER NOT NULL,
@@ -71,3 +78,7 @@ INSERT INTO plugins (
   id, name, link, version, submitted, updated, description,
   installation, sc4pac_id, desinstallation, modder, category, group_name
 ) VALUES (1, 'Region Thumbnail Fix DLL', 'https://community.simtropolis.com/files/file/36396-region-thumbnail-fix-dll/', '1.0.0', '2024-08-07', '2024-08-07', null, '', 'memo:region-thumbnail-fix-dll', '', 'memo', 'Bug Fixes', null);
+
+DELETE FROM plugin_images;
+INSERT INTO plugin_images (plugin_id, image_link)
+VALUES (1, 'https://www.simtropolis.com/objects/screens/monthly_2024_08/before-after.jpeg.147e3ee01bff54be8999236ff119a78b.jpeg');

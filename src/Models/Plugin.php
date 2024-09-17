@@ -6,7 +6,10 @@ use DateTimeInterface;
 
 final readonly class Plugin
 {
-  /** @param self[] $dependencies */
+  /**
+   * @param self[] $dependencies
+   * @param string[] $imagesLinks
+   */
   function __construct(
     public int $id,
     public string $name,
@@ -21,7 +24,8 @@ final readonly class Plugin
     public ?string $sc4pacId = null,
     public ?string $description = null,
     public ?Group $group = null,
-    public array $dependencies = []
+    public array $dependencies = [],
+    public array $imagesLinks = []
   ) {}
 
   function hasDependencies(): bool

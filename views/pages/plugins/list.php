@@ -39,6 +39,7 @@ function getTranslation(Plugin $plugin): object
         <a
           href="<?= $plugin->downloadPageLink ?>"
           target="_blank">
+          <img src="<?= @$plugin->imagesLinks[0] ?>" />
           <?= getTranslation($plugin)->name ?>
         </a>
         <?php if ($plugin->hasDependencies()): ?>

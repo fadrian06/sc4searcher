@@ -71,7 +71,24 @@ final readonly class PDOPluginRepository implements PluginRepository
       $this->categoryRepository->getByName($categoryName),
       $sc4pacId,
       $description,
-      $groupName ? $this->groupRepository->getByName($groupName) : null
+      $groupName ? $this->groupRepository->getByName($groupName) : null,
+      $this->getDependenciesById($id),
+      $this->getImagesById($id)
     );
+  }
+
+  /** @return Plugin[] */
+  private function getDependenciesById(int $id): array
+  {
+    return [];
+  }
+
+  /** @return string[] */
+  private function getImagesById(int $id): array
+  {
+    $stmt = $this->pdo->prepare('SELECT image_link FROM plugin_images WHERE plugin_id = ?');
+    $stmt->execute([$id]);
+
+    return $stmt->fetchAll(PDO::FETCH_FUNC, fn(string $imageLink): string => $imageLink);
   }
 }
