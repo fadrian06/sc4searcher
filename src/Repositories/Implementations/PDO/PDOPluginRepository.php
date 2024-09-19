@@ -4,6 +4,7 @@ namespace SC4S\Repositories\Implementations\PDO;
 
 use DateTimeImmutable;
 use PDO;
+use SC4S\Models\Modder;
 use SC4S\Models\Plugin;
 use SC4S\Repositories\Interfaces\CategoryRepository;
 use SC4S\Repositories\Interfaces\GroupRepository;
@@ -31,6 +32,14 @@ final readonly class PDOPluginRepository implements PluginRepository
   function getById(int $pluginId): ?Plugin
   {
     return null;
+  }
+
+  function getByModder(Modder $modder): array
+  {
+    $stmt = $this->pdo->query('SELECT * FROM plugins WHERE modder = ?');
+    $stmt->execute([$modder->name]);
+
+    return $stmt->fetchAll(PDO::FETCH_FUNC, [$this, 'mapper']);
   }
 
   function save(Plugin $plugin): EmptyResult

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Container\Container;
+use Psr\Container\ContainerInterface;
 use SC4S\Repositories\Implementations\PDO\PDOCategoryRepository;
 use SC4S\Repositories\Implementations\PDO\PDOGroupRepository;
 use SC4S\Repositories\Implementations\PDO\PDOModderRepository;
@@ -17,9 +18,9 @@ $container->bind(PDO::class, fn(): PDO => new PDO(
   options: [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
 ), true);
 
-$container->bind(ModderRepository::class, PDOModderRepository::class, true);
 $container->bind(CategoryRepository::class, PDOCategoryRepository::class, true);
-$container->bind(PluginRepository::class, PDOPluginRepository::class, true);
 $container->bind(GroupRepository::class, PDOGroupRepository::class, true);
+$container->bind(PluginRepository::class, PDOPluginRepository::class, true);
+$container->bind(ModderRepository::class, PDOModderRepository::class, true);
 
 Flight::registerContainerHandler([$container, 'get']);

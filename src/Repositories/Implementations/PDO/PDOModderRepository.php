@@ -8,16 +8,16 @@ use SC4S\Models\Modder;
 use SC4S\Repositories\Interfaces\ModderRepository;
 use SC4S\Result\EmptyResult;
 
-final readonly class PDOModderRepository implements ModderRepository
+final class PDOModderRepository implements ModderRepository
 {
-  function __construct(private PDO $pdo) {}
+  function __construct(private readonly PDO $pdo) {}
 
   function getAll(): array
   {
     $stmt = $this->pdo->query('SELECT * FROM modders');
     $stmt->execute();
 
-    return $stmt->fetchAll(PDO::FETCH_FUNC, [self::class, 'mapper']);
+    return $stmt->fetchAll(PDO::FETCH_FUNC, [$this, 'mapper']);
   }
 
   function getByName(string $modderName): ?Modder
@@ -30,7 +30,7 @@ final readonly class PDOModderRepository implements ModderRepository
       return null;
     }
 
-    return self::mapper(
+    return $this->mapper(
       $modderArray['name'],
       $modderArray['profile_link'],
       $modderArray['profile_image_link']
@@ -58,11 +58,11 @@ final readonly class PDOModderRepository implements ModderRepository
     }
   }
 
-  private static function mapper(
+  private function mapper(
     string $name,
     string $profileLink,
     string $profileImageLink
   ): Modder {
-    return new Modder($name, $profileLink, $profileImageLink, []);
+    return new Modder($name, $profileLink, $profileImageLink);
   }
 }

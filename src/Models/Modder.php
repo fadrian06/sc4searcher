@@ -2,16 +2,18 @@
 
 namespace SC4S\Models;
 
-final readonly class Modder
+final class Modder
 {
-  public string $profileLink;
+  public readonly string $profileLink;
+
+  /** @var Plugin[] */
+  private array $plugins = [];
 
   /** @param Plugin[] $plugins */
   function __construct(
     public readonly string $name,
     string $profileLink,
-    public string $profileImageLink,
-    private array $plugins = [],
+    public readonly string $profileImageLink
   ) {
     $this->profileLink = str_ends_with($profileLink, '/')
       ? $profileLink
@@ -21,5 +23,18 @@ final readonly class Modder
   function hasPlugins(): bool
   {
     return $this->plugins !== [];
+  }
+
+  function setPlugins(Plugin ...$plugins): self
+  {
+    $this->plugins = $plugins;
+
+    return $this;
+  }
+
+  /** @return Plugin[] */
+  function getPlugins(): array
+  {
+    return $this->plugins;
   }
 }

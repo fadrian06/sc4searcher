@@ -6,7 +6,10 @@ use SC4S\Models\Modder;
 
 ?>
 
-<h1><?= $modder->name ?></h1>
+<h1>
+  <img src="<?= $modder->profileImageLink ?>" />
+  <?= $modder->name ?>
+</h1>
 <a
   href="<?= $modder->profileLink ?>?do=content&type=downloads_file&change_section=1"
   target="_blank">
@@ -15,6 +18,30 @@ use SC4S\Models\Modder;
 
 <section>
   <?php if ($modder->hasPlugins()): ?>
+    <?php foreach ($modder->getPlugins() as $plugin): ?>
+      <li>
+        <a
+          href="<?= $plugin->downloadPageLink ?>"
+          target="_blank">
+          <img src="<?= @$plugin->imagesLinks[0] ?>" />
+          <?= $plugin->name ?>
+        </a>
+        <?php if ($plugin->hasDependencies()): ?>
+          <ul>
+            <li>Dependencies</li>
+            <?php foreach ($plugin->dependencies as $dependency): ?>
+              <li>
+                <a
+                  href="<?= $dependency->downloadPageLink ?>"
+                  target="_blank">
+                  <?= $dependency->name ?>
+                </a>
+              </li>
+            <?php endforeach ?>
+          </ul>
+        <?php endif ?>
+      </li>
+    <?php endforeach ?>
   <?php else: ?>
     No hay plugins asociados
   <?php endif ?>
